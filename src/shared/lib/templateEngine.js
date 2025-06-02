@@ -1,5 +1,6 @@
 import nunjucks from 'nunjucks';
 import { jsPDF } from 'jspdf';
+import { convertToNestedObject } from './convertToNested';
 
 class TransExtension {
   constructor(translation) {
@@ -14,27 +15,17 @@ class TransExtension {
     return new nodes.CallExtension(this, 'run', args);
   }
 
-  run(context, key) {
-    return this.translation[key] || key;
-  }
-}
-
-function convertToNestedObject(obj) {
-  const result = {};
-  Object.keys(obj).forEach((key) => {
-    const parts = key.split('.');
-    let currentPart = result;
-    parts.forEach((part, index) => {
-      if (index === parts.length - 1) {
-        currentPart[part] =
-          obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
-      } else {
-        currentPart[part] = currentPart[part] || {};
-        currentPart = currentPart[part];
-      }
+  run(_context, key, ...args) {
+    let translation = this.translation[key] || key;
+    // Используйте args для замены плейсхолдеров в строке перевода
+    args.forEach((value, index) => {
+      translation = translation.replace(
+        new RegExp(`\\{${index}\\}`, 'g'),
+        value
+      );
     });
-  });
-  return result;
+    return translation;
+  }
 }
 
 function createEnv(translation) {
@@ -50,7 +41,16 @@ function getBodyContent(draft, vars, translation) {
 }
 
 function renderTemplate(draft, vars, translation) {
-  const objectVars = convertToNestedObject(vars);
+  // Если vars уже является структурированным объектом (object_model), используем его напрямую
+  // Иначе преобразуем через convertToNestedObject для обратной совместимости
+  const objectVars =
+    vars &&
+    typeof vars === 'object' &&
+    !Array.isArray(vars) &&
+    Object.keys(vars).some((key) => !key.includes('.'))
+      ? vars
+      : convertToNestedObject(vars);
+
   const env = createEnv(translation);
   return env.renderString(draft, objectVars);
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-btn @click="state.update()" color="teal" icon="fas fa-refresh">обновить</q-btn>
+  <q-btn @click="state.parseContext()" color="teal" icon="fas fa-refresh"></q-btn>
 </template>
 
 <style scoped>

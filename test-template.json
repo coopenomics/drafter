@@ -1,0 +1,75 @@
+{
+  "context": "<div class=\"digital-document\"><p style=\"text-align: center;\"><h3>{% trans 'AGENDA_PROPOSAL_TITLE' %}</h3></p><p style=\"text-align: center;\">{% if meet.type == 'regular' %}{% trans 'ANNUAL_REGULAR' %}{% else %}{% trans 'ANNUAL_EXTRAORDINARY' %}{% endif %} {% trans 'GENERAL_MEETING_SHAREHOLDERS' %}</p><p style=\"text-align: center;\">{{vars.full_abbr_genitive}} «{{vars.name}}»</p><p style=\"text-align: right;\">{{ coop.city }}, {{ meet.created_at_day }} {{ meet.created_at_month }} {{ meet.created_at_year }} г.</p><p>{% trans 'MEETING_DATE_LABEL' %}: {{ meet.open_at_date }}</p><p>{% trans 'MEETING_TIME_LABEL' %}: {{ meet.open_at_time }}</p><p>{% trans 'MEETING_FORMAT_LABEL' %}: {% trans 'MEETING_FORMAT_VALUE' %}</p><p>{% trans 'REGISTRATION_DATETIME' %}: {{ meet.registration_datetime }}</p><p>{% trans 'VOTING_DEADLINE' %}: {% trans 'NO_LATER_THAN' %} {{ meet.close_at_datetime }}</p><h3>{% trans 'AGENDA_QUESTIONS' %}:</h3>{% for question in questions %}<p>{{ question.number }}. {{ question.title }}</p>{% if question.context %}<p>{{ question.context }}</p>{% endif %}{% endfor %}<h3>{% trans 'PROJECT_DECISIONS' %}:</h3>{% for question in questions %}<p>{% trans 'PROJECT_DECISION_LABEL' %} {{ question.number }}: {{ question.decision }}</p>{% endfor %}<p>{{ meet.presider_last_name }} {{ meet.presider_first_name }} {{ meet.presider_middle_name }}</p></div>\n\n<style>\n  .digital-document {\n    padding: 20px;\n    white-space: pre-wrap;\n  }\n</style>",
+  "model": {
+    "coop.city": "Москва",
+    "meet.type": "regular",
+    "meet.created_at_day": "12",
+    "meet.created_at_month": "февраля",
+    "meet.created_at_year": "2024",
+    "meet.open_at_date": "12.03.2024",
+    "meet.open_at_time": "10:00",
+    "meet.registration_datetime": "12.03.2024, 09:30",
+    "meet.close_at_datetime": "15.03.2024",
+    "meet.presider_last_name": "Иванов",
+    "meet.presider_first_name": "Петр",
+    "meet.presider_middle_name": "Сидорович",
+    "question.number": "1",
+    "question.title": "Отчет Председателя Потребительского Кооператива о проделанной работе за период с 01.01.2023 г. по 31.12.2023 г.",
+    "question.context": "Подробная информация об отчете приведена в документе...",
+    "question.decision": "Принять Отчет Председателя Совета и признать результаты деятельности удовлетворительными",
+    "vars.full_abbr_genitive": "Потребительского Кооператива",
+    "vars.name": "ВОСХОД"
+  },
+  "translation": {
+    "AGENDA_PROPOSAL_TITLE": "ПРЕДЛОЖЕНИЕ ПОВЕСТКИ",
+    "ANNUAL_REGULAR": "ОЧЕРЕДНОГО",
+    "ANNUAL_EXTRAORDINARY": "ВНЕОЧЕРЕДНОГО",
+    "GENERAL_MEETING_SHAREHOLDERS": "СОБРАНИЯ ПАЙЩИКОВ",
+    "MEETING_DATE_LABEL": "Дата проведения Собрания",
+    "MEETING_TIME_LABEL": "Время проведения Собрания",
+    "MEETING_FORMAT_LABEL": "Форма проведения собрания",
+    "MEETING_FORMAT_VALUE": "заочное",
+    "REGISTRATION_DATETIME": "Дата и время регистрации участников Собрания",
+    "VOTING_DEADLINE": "Дата и время сбора заявлений пайщиков с результатом голосования",
+    "NO_LATER_THAN": "не позднее",
+    "AGENDA_QUESTIONS": "ВОПРОСЫ ПОВЕСТКИ ДНЯ",
+    "PROJECT_DECISIONS": "ПРОЕКТЫ РЕШЕНИЙ",
+    "PROJECT_DECISION_LABEL": "ПРОЕКТ РЕШЕНИЯ по вопросу"
+  },
+  "object_model": {
+    "coop": {
+      "city": "Москва"
+    },
+    "meet": {
+      "type": "regular",
+      "created_at_day": "12",
+      "created_at_month": "февраля",
+      "created_at_year": "2024",
+      "open_at_date": "12.03.2024",
+      "open_at_time": "10:00",
+      "registration_datetime": "12.03.2024, 09:30",
+      "close_at_datetime": "15.03.2024",
+      "presider_last_name": "Иванов",
+      "presider_first_name": "Петр",
+      "presider_middle_name": "Сидорович"
+    },
+    "questions": [
+      {
+        "number": "1",
+        "title": "Отчет Председателя Потребительского Кооператива о проделанной работе за период с 01.01.2023 г. по 31.12.2023 г.",
+        "context": "Подробная информация об отчете приведена в документе...",
+        "decision": "Принять Отчет Председателя Совета и признать результаты деятельности удовлетворительными"
+      },
+      {
+        "number": "2",
+        "title": "Утверждение Заключения Ревизионной Комиссии о ревизии деятельности за период с 01.01.2023 г. по 31.12.2023 г.",
+        "context": "Заключение Ревизионной Комиссии содержит...",
+        "decision": "Утвердить Заключение Ревизионной Комиссии о ревизии деятельности"
+      }
+    ],
+    "vars": {
+      "full_abbr_genitive": "Потребительского Кооператива",
+      "name": "ВОСХОД"
+    }
+  }
+}

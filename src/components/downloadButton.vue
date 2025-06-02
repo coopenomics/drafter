@@ -1,5 +1,5 @@
 <template>
-  <q-btn @click="download" color="teal" icon="fas fa-download">скачать</q-btn>
+  <q-btn @click="download" color="teal" icon="fas fa-download"></q-btn>
 
 </template>
 
@@ -22,7 +22,7 @@ const download = () => {
   const element = document.createElement('a');
   const file = new Blob([state.getTemplate()], {type: 'text/plain'});
   element.href = URL.createObjectURL(file);
-  const currentDate = new Date().toISOString().replace(/[-:.]/g, '').replace(/[TZ]/g, '').replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3_$4$5$6');
+  const currentDate = new Date().toISOString();
   element.download = `template_${currentDate}.json`;
   document.body.appendChild(element); // Required for this to work in FireFox
   element.click();
