@@ -5,6 +5,9 @@
  * the ES6 features that are supported by your Node version. https://node.green/
  */
 
+// Загружаем переменные окружения из .env файла
+require('dotenv').config();
+
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
@@ -53,7 +56,6 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -100,7 +102,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -166,7 +168,10 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
     electron: {
-      // extendElectronMainConf (esbuildConf)
+      extendElectronMainConf(esbuildConf) {
+        // Убираем зависимость от переменной окружения COOPTYPES_REGISTRY_PATH
+        esbuildConf.define = esbuildConf.define || {};
+      },
       // extendElectronPreloadConf (esbuildConf)
 
       inspectPort: 5858,

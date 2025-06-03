@@ -1,80 +1,91 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-  <q-card flat>
-    <p class="text-center">Переменные и переводы</p>
-    <q-tree
-      :nodes="nodes"
-      node-key="id"
-      :label-key="labelKey"
-      :children-key="childrenKey"
-      :default-expanded="defaultExpanded"
-    >
-      <template v-slot:default-body="{ node }">
-        <div v-if="node.isAddButton" class="q-pa-xs">
-          <q-btn
-            size="sm"
-            color="primary"
-            icon="add"
-            :label="node.label"
-            @click="addArrayItemByPath(node.arrayPath)"
-          />
-        </div>
-        <div v-else-if="!node.children" class="q-pa-xs">
-          <q-input
-            type="textarea"
-            rows="3"
-            dense
-            filled
-            v-model="node[displayKey]"
-            @update:model-value="updateValue(node, $event)"
-          />
-        </div>
-        <div v-else-if="node.isArray" class="q-pa-xs">
-          <div class="row items-center q-mb-sm">
-            <div class="col">
-              <q-btn
-                size="sm"
-                color="primary"
-                icon="add"
-                label="Добавить элемент"
-                @click="addArrayItem(node)"
-              />
-            </div>
+  <q-card flat class="model-card">
+    <q-banner class="bg-secondary text-white no-border-radius q-px-md q-py-sm">
+      <template v-slot:avatar>
+        <q-icon name="data_object" />
+      </template>
+      <q-badge class="q-ml-md" color="white" text-color="secondary">
+        Данные
+      </q-badge>
+    </q-banner>
+    <div class="model-content">
+      <q-tree
+        :nodes="nodes"
+        node-key="id"
+        :label-key="labelKey"
+        :children-key="childrenKey"
+        :default-expanded="defaultExpanded"
+      >
+        <template v-slot:default-body="{ node }">
+          <div v-if="node.isAddButton" class="q-pa-xs">
+            <q-btn
+              size="sm"
+              color="primary"
+              icon="add"
+              :label="node.label"
+              @click="addArrayItemByPath(node.arrayPath)"
+            />
           </div>
-          <div
-            v-for="(item, index) in node.arrayItems"
-            :key="index"
-            class="q-mb-md q-pa-sm"
-            style="border: 1px solid #e0e0e0; border-radius: 4px"
-          >
+          <div v-else-if="!node.children" class="q-pa-xs">
+            <q-input
+              type="textarea"
+              rows="3"
+              dense
+              filled
+              v-model="node[displayKey]"
+              @update:model-value="updateValue(node, $event)"
+            />
+          </div>
+          <div v-else-if="node.isArray" class="q-pa-xs">
             <div class="row items-center q-mb-sm">
               <div class="col">
-                <strong>{{ node.label }} [{{ index }}]</strong>
-              </div>
-              <div class="col-auto">
                 <q-btn
                   size="sm"
-                  color="negative"
-                  icon="delete"
-                  @click="removeArrayItem(node, index)"
+                  color="primary"
+                  icon="add"
+                  label="Добавить элемент"
+                  @click="addArrayItem(node)"
                 />
               </div>
             </div>
-            <div v-for="(value, key) in item" :key="key" class="q-mb-sm">
-              <q-input
-                :label="String(key)"
-                type="textarea"
-                rows="2"
-                dense
-                filled
-                v-model="item[key]"
-                @change="updateArrayValue(node, index, String(key), item[key])"
-              />
+            <div
+              v-for="(item, index) in node.arrayItems"
+              :key="index"
+              class="q-mb-md q-pa-sm"
+              style="border: 1px solid #e0e0e0; border-radius: 4px"
+            >
+              <div class="row items-center q-mb-sm">
+                <div class="col">
+                  <strong>{{ node.label }} [{{ index }}]</strong>
+                </div>
+                <div class="col-auto">
+                  <q-btn
+                    size="sm"
+                    color="negative"
+                    icon="delete"
+                    @click="removeArrayItem(node, index)"
+                  />
+                </div>
+              </div>
+              <div v-for="(value, key) in item" :key="key" class="q-mb-sm">
+                <q-input
+                  :label="String(key)"
+                  type="textarea"
+                  rows="2"
+                  dense
+                  filled
+                  v-model="item[key]"
+                  @change="
+                    updateArrayValue(node, index, String(key), item[key])
+                  "
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </q-tree>
+        </template>
+      </q-tree>
+    </div>
   </q-card>
 </template>
 
@@ -419,3 +430,22 @@ watchEffect(() => {
   nodes.value = generateTree();
 });
 </script>
+
+<style scoped>
+.model-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.model-content {
+  flex: 1;
+  overflow: auto;
+  padding: 0.25rem;
+}
+
+.no-border-radius {
+  border-radius: 0;
+}
+</style>

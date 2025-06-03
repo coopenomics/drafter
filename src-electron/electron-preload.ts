@@ -27,4 +27,30 @@
  *   }
  * }
  */
-export {}
+
+import { contextBridge, ipcRenderer } from 'electron';
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  // Файловые операции для шаблонов
+  readTemplateFile: (fileName: string) =>
+    ipcRenderer.invoke('read-template-file', fileName),
+  writeTemplateFile: (fileName: string, content: string) =>
+    ipcRenderer.invoke('write-template-file', fileName, content),
+  listTemplateFiles: () => ipcRenderer.invoke('list-template-files'),
+
+  // Операции с cooptypes
+  listCooptypeDirectories: () =>
+    ipcRenderer.invoke('list-cooptype-directories'),
+  readCooptypeFile: (templateId: string) =>
+    ipcRenderer.invoke('read-cooptype-file', templateId),
+  writeCooptypeFile: (templateId: string, content: string) =>
+    ipcRenderer.invoke('write-cooptype-file', templateId, content),
+
+  // Операции с путем к реестру
+  setRegistryPath: (path: string) =>
+    ipcRenderer.invoke('set-registry-path', path),
+  getRegistryPath: () => ipcRenderer.invoke('get-registry-path'),
+  selectDirectory: () => ipcRenderer.invoke('select-directory'),
+});
+
+export {};

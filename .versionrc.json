@@ -1,0 +1,14 @@
+{
+  "types": [
+    { "type": "feat", "section": "Новые функции" },
+    { "type": "fix", "section": "Исправления ошибок" },
+    { "type": "chore", "hidden": true },
+    { "type": "docs", "section": "Документация" },
+    { "type": "style", "section": "Стилевые изменения" },
+    { "type": "refactor", "section": "Рефакторинг кода" },
+    { "type": "perf", "section": "Оптимизация производительности" },
+    { "type": "test", "section": "Тесты" }
+  ],
+  "commitUrlFormat": "https://github.com/your-username/drafter/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/your-username/drafter/compare/{{previousTag}}...{{currentTag}}"
+}

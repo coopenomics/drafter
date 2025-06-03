@@ -1,39 +1,69 @@
 <template>
   <q-page>
-    <div class="row">
-      <updateButton class="col-4"/>
-      <templateUploader class="col-4"/>
-      <downloadButton class="col-4"/>
+    <div v-if="!currentTemplate" class="full-height flex flex-center">
+      <div class="text-center">
+        <q-icon name="description" size="4rem" color="grey-5" />
+        <h5 class="text-grey-6 q-mt-md q-mb-md">
+          Выберите шаблон для редактирования
+        </h5>
+        <p class="text-grey-5">
+          Используйте меню слева для выбора шаблона из списка
+        </p>
+      </div>
     </div>
-    <div class="row" >
-      <htmlEditor class="col-4 q-pa-md scrolled" />
-      <modelViewer class="col-4 q-pa-md scrolled"/>
-      <htmlPreview class="col-4 q-pa-md scrolled"/>
+
+    <div v-else class="q-pa-sm">
+      <div class="editor-container">
+        <q-splitter v-model="editorSplit" class="full-height">
+          <template v-slot:before>
+            <htmlEditor class="q-pa-md" />
+          </template>
+
+          <template v-slot:after>
+            <q-splitter v-model="rightSplit" class="full-height">
+              <template v-slot:before>
+                <modelViewer class="q-pa-md" />
+              </template>
+
+              <template v-slot:after>
+                <htmlPreview class="q-pa-md" />
+              </template>
+            </q-splitter>
+          </template>
+        </q-splitter>
+      </div>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue';
-// import { Meta } from 'components/models';
+import { computed, ref } from 'vue';
+import { useAppState } from 'src/stores/store';
 import htmlPreview from 'src/components/htmlPreview.vue';
-import updateButton from 'src/components/updateButton.vue';
-import downloadButton from 'src/components/downloadButton.vue';
-import templateUploader from 'src/components/templateUploader.vue';
 import htmlEditor from 'src/components/htmlEditor.vue';
 import modelViewer from 'src/components/modelViewer.vue';
+
+const appState = useAppState();
+const editorSplit = ref(33); // 33% для левой панели
+const rightSplit = ref(50); // 50% для средней панели от оставшегося пространства
+
+const currentTemplate = computed(() => appState.currentTemplate);
 
 defineOptions({
   name: 'IndexPage',
 });
-
-// const meta = ref<Meta>({
-//   totalCount: 1200,
-// });
 </script>
+
 <style>
-.scrolled{
-  max-height: 90vh;
-  overflow-y: scroll;
+.editor-container {
+  height: calc(100vh - 100px);
+}
+
+.full-height {
+  height: 100%;
+}
+
+.q-splitter :deep(.q-splitter__panel) {
+  overflow: auto;
 }
 </style>
