@@ -6,23 +6,18 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  release:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-    env:
-      # Отключаем проверку lockfile во всем workflow
-      PNPM_NO_LOCKFILE_FROZEN: 1
-      # Запрещаем генерацию lockfile при установке пакетов
-      PNPM_NO_LOCKFILE: 1
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
@@ -32,51 +27,27 @@ jobs:
           version: 8
           run_install: false
 
-      - name: Install dependencies
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release: true
+          # Указываем команды для установки зависимостей и сборки
+          build_script_name: build
+          install_script_name: install:ci
+
+      # Альтернативный вариант, если action-electron-builder не работает с pnpm
+      - name: Install dependencies (fallback)
+        if: failure()
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build Electron App
+      - name: Build Electron app (fallback)
+        if: failure()
         run: pnpm build:electron
 
-      - name: Get app info
-        id: app_info
-        run: |
-          APP_VERSION=$(node -p "require('./package.json').version")
-          APP_NAME=$(node -p "require('./package.json').name")
-          PLATFORM=""
-
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            PLATFORM="windows"
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-            PLATFORM="macos"
-          else
-            PLATFORM="linux"
-          fi
-
-          echo "ARTIFACT_NAME=${APP_NAME}-${PLATFORM}-${APP_VERSION}" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload artifacts (fallback)
+        if: failure()
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.app_info.outputs.ARTIFACT_NAME }}
+          name: electron-${{ matrix.os }}-${{ github.ref_name }}
           path: dist/electron/**/*
-          if-no-files-found: warn
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: artifacts/**/*
-          draft: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

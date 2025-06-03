@@ -13,6 +13,7 @@
     "build": "quasar build",
     "dev:electron": "quasar dev -m electron",
     "build:electron": "quasar build -m electron",
+    "install:ci": "pnpm install --no-frozen-lockfile",
     "release": "standard-version && git push --follow-tags origin master",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
@@ -56,5 +57,36 @@
     "node": "^20 || ^18 || ^16",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
+  },
+  "build": {
+    "appId": "com.dacom.drafter",
+    "productName": "Drafter",
+    "directories": {
+      "output": "dist/electron/packaged"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    }
   }
 }
