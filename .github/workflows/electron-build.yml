@@ -9,9 +9,13 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+    env:
+      # Отключаем проверку lockfile во всем workflow
+      PNPM_NO_LOCKFILE_FROZEN: 1
+      # Запрещаем генерацию lockfile при установке пакетов
+      PNPM_NO_LOCKFILE: 1
 
     steps:
       - name: Checkout code
@@ -34,8 +38,8 @@ jobs:
       - name: Build Electron App
         run: pnpm build:electron
 
-      - name: Prepare artifact name
-        id: prepare_artifact
+      - name: Get app info
+        id: app_info
         run: |
           APP_VERSION=$(node -p "require('./package.json').version")
           APP_NAME=$(node -p "require('./package.json').name")
@@ -55,8 +59,8 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.prepare_artifact.outputs.ARTIFACT_NAME }}
-          path: dist/electron/*
+          name: ${{ steps.app_info.outputs.ARTIFACT_NAME }}
+          path: dist/electron/**/*
           if-no-files-found: warn
 
   release:
