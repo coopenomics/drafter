@@ -24,7 +24,7 @@ jobs:
           run_install: false
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Lint code
         run: pnpm lint
@@ -62,7 +62,30 @@ jobs:
         shell: bash
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Patch quasar.config.js for production dependencies
+        run: |
+          cat <<EOF >> patch-quasar.js
+          const fs = require('fs');
+          const path = require('path');
+
+          const configPath = path.join(process.cwd(), 'quasar.config.js');
+          let content = fs.readFileSync(configPath, 'utf8');
+
+          // Добавляем опцию для установки зависимостей без frozen-lockfile
+          if (!content.includes('--no-frozen-lockfile')) {
+            content = content.replace(
+              'packager: {',
+              'packager: {\n        installArgs: ["--no-frozen-lockfile"],'
+            );
+            fs.writeFileSync(configPath, content, 'utf8');
+            console.log('Patched quasar.config.js to add --no-frozen-lockfile');
+          } else {
+            console.log('quasar.config.js already has --no-frozen-lockfile option');
+          }
+          EOF
+          node patch-quasar.js
 
       - name: Build Electron App for Windows
         if: matrix.os == 'windows-latest'
